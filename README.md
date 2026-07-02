@@ -1,43 +1,38 @@
-# Container Platform Terraform Module Template
+# container-platform-terraform-envoy-gateway
 
-[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/container-platform-terraform-template/badge)](https://github-community.service.justice.gov.uk/repository-standards/container-platform-terraform-template)
+[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/container-platform-terraform-envoy-gateway/badge)](https://github-community.service.justice.gov.uk/repository-standards/container-platform-terraform-envoy-gateway)
 
-A template repository for building Terraform modules for the Container Platform.
+Terraform module that installs the Envoy Gateway controller on an EKS cluster using the official Helm chart.
+
+This module handles the **CRD and controller layer only**. Use it alongside [container-platform-terraform-gateway-api](https://github.com/ministryofjustice/container-platform-terraform-gateway-api) to create the actual Gateway API resources (GatewayClass, Gateway, EnvoyProxy, ListenerSet).
+
+## What this module creates
+
+- A namespace named `envoy-gateway-system`
+- The Envoy Gateway Helm release
+
+The Helm chart installs two sets of CRDs as part of the release:
+- **Gateway API CRDs** — `GatewayClass`, `Gateway`, `HTTPRoute`, `GRPCRoute`, etc.
+- **Envoy Gateway CRDs** — `EnvoyProxy`, `EnvoyPatchPolicy`, `BackendTrafficPolicy`, `ListenerSet`, etc.
 
 ## Usage
 
-Click **"Use this template"** to create a new Terraform module repository.
+```hcl
+module "envoy_gateway" {
+  source = "github.com/ministryofjustice/container-platform-terraform-envoy-gateway?ref=<tag>"
 
-## Structure
-
-```
-├── main.tf           # Main module resources
-├── variables.tf      # Input variables
-├── outputs.tf        # Output values
-├── versions.tf       # Provider and Terraform version constraints
-└── README.md
+  # Optional
+  # name                      = "default"
+  # envoy_controller_replicas = 2
+}
 ```
 
-## After Creating Your Module
+## Inputs
 
-1. Update this README with your module's documentation
-2. Update `CODEOWNERS` with the appropriate team
-3. Review `dependabot.yml` configuration
-4. Update the compliance badge URL with your repository name
-5. Add your Terraform resources to `main.tf`
-6. Define input variables in `variables.tf`
-7. Define outputs in `outputs.tf`
-8. Set version constraints in `versions.tf`
-
-## Requirements
-
-| Name | Version |
-|------|---------|
-| terraform | >= 1.0 |
-
-## Repository Standards
-
-This repository follows the [Ministry of Justice GitHub Repository Standards](https://github-community.service.justice.gov.uk/repository-standards/guidance).
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| `name` | Name used for the Helm release. | `string` | `"default"` |
+| `envoy_controller_replicas` | Number of replicas for the Envoy Gateway controller deployment. | `number` | `2` |
 
 ## License
 
