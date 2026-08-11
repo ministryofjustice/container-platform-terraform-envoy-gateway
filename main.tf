@@ -24,7 +24,7 @@ resource "helm_release" "envoy_gateway" {
   chart            = "gateway-helm"
   namespace        = local.namespace
   create_namespace = false
-  version          = "1.8.1"
+  version          = "1.8.3"
 
   values = [
     yamlencode({
