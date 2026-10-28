@@ -24,12 +24,20 @@ resource "helm_release" "envoy_gateway" {
   chart            = "gateway-helm"
   namespace        = local.namespace
   create_namespace = false
-  version          = "1.8.3"
+  version          = "1.8.6"
 
   values = [
     yamlencode({
       deployment = {
         replicas = var.envoy_controller_replicas
+      }
+      # temporary override to resolve the emudhra certificate issue, remove in future versions if resolved
+      global = {
+        images = {
+          envoyProxy = {
+            image = "docker.io/envoyproxy/envoy:distroless-v1.38.9"
+          }
+        }
       }
     })
   ]
