@@ -28,6 +28,10 @@ resource "helm_release" "envoy_gateway" {
 
   values = [
     yamlencode({
+      # CRDs are managed outside this module.
+      crds = {
+        enabled = false
+      }
       deployment = {
         replicas = var.envoy_controller_replicas
       }
