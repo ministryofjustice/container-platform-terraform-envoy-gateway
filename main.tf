@@ -28,6 +28,12 @@ resource "helm_release" "envoy_gateway" {
 
   values = [
     yamlencode({
+      # CRDs and safe-upgrade admission resources are managed separately
+      # through Terraform to support independent upgrades.
+      # https://gateway.envoyproxy.io/docs/install/install-helm/#upgrading-from-the-previous-version
+      crds = {
+        enabled = false
+      }
       deployment = {
         replicas = var.envoy_controller_replicas
       }
